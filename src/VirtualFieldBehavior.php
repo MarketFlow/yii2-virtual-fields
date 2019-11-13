@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SamIT\Yii2\VirtualFields;
 
 
-use SamIT\Yii2\VirtualFields\exceptions\FieldNotFoundException;
-use SamIT\Yii2\VirtualFields\exceptions\FieldNotLoadedException;
 use yii\base\Behavior;
-use yii\db\ActiveRecord;
+use yii\base\InvalidConfigException;
 use yii\db\ExpressionInterface;
 
 class VirtualFieldBehavior extends Behavior
@@ -22,9 +20,7 @@ class VirtualFieldBehavior extends Behavior
      * [
      *     'postCount' => [
      *         self::LAZY => function($model) { return $model->getPosts()->count; }
-     *         self::GREEDY => Post::find()->limit(1)->select('count(*)')->where('author_id = author.id'),
-     *         self::CAST => self::CAST_INT
-     *
+     *         self::GREEDY => Post::find()->limit(1)->select('count(*)')->where('author_id = author.id')
      *     ]
      * ]
      *
@@ -33,23 +29,20 @@ class VirtualFieldBehavior extends Behavior
      */
     public $virtualFields = [];
 
-    /**
-     * @var array|mixed[string] The values of the virtual fields indexed by field name
-     */
     private $values = [];
 
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_REFRESH => 'resetValues',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'resetValues'
+            \yii\db\ActiveRecord::EVENT_AFTER_REFRESH => 'resetValues',
+            \yii\db\ActiveRecord::EVENT_AFTER_UPDATE => 'resetValues'
         ];
     }
 
     public function getVirtualExpression($name): ExpressionInterface
     {
         if (!isset($this->virtualFields[$name])) {
-            throw new FieldNotFoundException($name);
+            throw new InvalidConfigException("Unknown virtual field: $name");
         }
         return $this->virtualFields[$name][self::GREEDY];
     }
@@ -59,12 +52,6 @@ class VirtualFieldBehavior extends Behavior
         $this->values = [];
     }
 
-    /**
-     * @param string $name
-     * @return mixed
-     * @throws FieldNotLoadedException
-     * @throws \yii\base\UnknownPropertyException
-     */
     public function __get($name)
     {
         if (isset($this->virtualFields[$name])) {
@@ -95,17 +82,10 @@ class VirtualFieldBehavior extends Behavior
         }
     }
 
-    /**
-     * @param string $name
-     * @return mixed
-     * @throws FieldNotLoadedException
-     */
+
     private function resolveValue(string $name)
     {
         if (!array_key_exists($name, $this->values)) {
-            if (!isset($this->virtualFields[$name][self::LAZY])) {
-                throw new FieldNotLoadedException($name);
-            }
             $this->setValue($name, $this->virtualFields[$name][self::LAZY]($this->owner));
         }
 

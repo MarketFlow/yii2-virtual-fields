@@ -1,7 +1,7 @@
 # yii2-virtual-fields
 Implementation of virtual fields for Yii2 AR
 
-This library contains 2 behaviors.
+This library contains 2 classes: ActiveRecord and ActiveQuery.
 
 These classes together add support for virtual fields like CakePHP http://book.cakephp.org/2.0/en/models/virtual-fields.html
 
