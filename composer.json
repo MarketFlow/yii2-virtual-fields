@@ -1,37 +1,20 @@
 {
-    "name": "sam-it/yii2-virtual-fields",
+    "name": "marketflow/yii2-virtual-fields",
     "description": "Implementation of virtual fields for Yii2 AR",
     "license": "MIT",
     "authors": [
         {
             "name": "Sam Mousa",
             "email": "sam@marketflow.nl"
+        }, {
+            "name": "Joey Claessen",
+            "email": "joey@marketflow.nl"
         }
     ],
     "autoload": {
         "psr-4": {
-            "SamIT\\Yii2\\VirtualFields\\" : ["src/"]
+            "MarketFlow\\Yii2VirtualFields\\" : ["src/"]
         }
     },
-    "require": {
-        "php": "> 7.3"
-    },
-    "replace": {
-        "bower-asset/jquery": "*",
-        "bower-asset/jquery.inputmask": "*",
-        "bower-asset/inputmask": "*",
-        "bower-asset/punycode": "*",
-        "bower-asset/yii2-pjax": "*"
-
-    },
-    "autoload-dev": {
-        "classmap": [
-            "vendor/yiisoft/yii2/Yii.php",
-            "tests/_data/app"
-        ]
-    },
-    "require-dev": {
-        "yiisoft/yii2": "^2.0",
-        "codeception/codeception": "^3.1"
-    }
+    "require": {}
 }
